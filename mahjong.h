@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include<string>
 
-enum class TileGroups {Dragon, Wind, Flower, Symbol, Bamboo, Dot};
+// enum class TileGroups {DRAGON, WIND, FLOWER, SYMBOL, BAMBOO, DOT};
 
 struct TileGroup {
     std::string name;
