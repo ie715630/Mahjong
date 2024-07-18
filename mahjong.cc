@@ -5,7 +5,6 @@
 
 // Constructor
 MahjongSet::MahjongSet() {
-    _num_tiles = 0;
     create_dragon_tiles();
     create_wind_tiles();
     create_flower_tiles();
@@ -26,7 +25,7 @@ void MahjongSet::create_tiles(TileGroup group, std::list<std::string> names) {
     for (auto tile_name : names) {
         MahjongTile * tile = new MahjongTile(group, tile_name);
         for (int num_tiles = 0; num_tiles < num_repeated_tiles; num_tiles++) {
-            _mahjong_set[_num_tiles++] = tile;
+            _mahjong_set.push_back(tile);
         }
     }
 }
@@ -44,7 +43,7 @@ void MahjongSet::create_numbered_tiles(TileGroup group, int max_num_tile) {
         int real_tile_num = tile_num+1;
         MahjongTile * tile = new MahjongTileNumerical(group, real_tile_num);
         for (int num_tiles = 0; num_tiles < num_repeated_tiles; num_tiles++) {
-            _mahjong_set[_num_tiles++] = tile;
+            _mahjong_set.push_back(tile);
         }
     }
 }
@@ -77,15 +76,25 @@ void MahjongSet::create_dot_tiles() {
 void MahjongSet::print() {
         printf("******Mahjong set******\n");
         for (int num_tile = 0; num_tile < TILES_IN_SET; num_tile++) {
-            _mahjong_set[num_tile]->print();
+            _mahjong_set.at(num_tile)->print();
         }
-        printf("Number of tiles: %i\n", _num_tiles);
+        printf("Number of tiles: %i\n\n", int(_mahjong_set.size()));
+}
+
+void MahjongSet::shuffle() {
+    // Create a random number generator based on the current time
+    int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng(seed);
+    // Shuffle
+    std::shuffle(_mahjong_set.begin(), _mahjong_set.end(), rng);
 }
 
 int main() {
     printf("Welcome to mahjong\n\n");
 
     MahjongSet mahjong_set = MahjongSet();
+    // mahjong_set.print();
+    mahjong_set.shuffle();
     mahjong_set.print();
 
     return 0;
