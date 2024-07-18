@@ -5,6 +5,10 @@
 #include<string>
 #include<list>
 #include<cassert>
+#include<vector>
+#include <algorithm>
+#include <random>
+#include <chrono>
 
 #define TILES_IN_SET 144
 
@@ -22,8 +26,8 @@ protected:
 public:
     // TODO: Clean constructors
     explicit MahjongTile() {}
-    explicit MahjongTile(TileGroup tile_group, std::string name)
-             : _tile_group(tile_group), _name(name) {}
+    explicit MahjongTile(TileGroup tile_group, std::string name):
+                         _tile_group(tile_group), _name(name) {}
 
     void print() {
         printf("%s %s\n", _name.c_str(), _tile_group.name.c_str());
@@ -48,10 +52,10 @@ class MahjongSet {
 public:
     explicit MahjongSet();
     void print();
+    void shuffle();
 
 protected:
-    MahjongTile * _mahjong_set [TILES_IN_SET];
-    int _num_tiles;
+    std::vector<MahjongTile*> _mahjong_set ;
 
     const TileGroup DRAGON = TileGroup{.name = "Dragon", .has_a_number = false, .num_tiles_in_set = 12};
     const TileGroup WIND = TileGroup{.name = "Wind", .has_a_number = false, .num_tiles_in_set = 16};
