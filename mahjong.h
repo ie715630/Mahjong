@@ -4,10 +4,9 @@
 #include <stdio.h>
 #include<string>
 #include<list>
+#include<cassert>
 
 #define TILES_IN_SET 144
-
-// enum class TileGroups {DRAGON, WIND, FLOWER, SYMBOL, BAMBOO, DOT};
 
 struct TileGroup {
     std::string name;
@@ -47,22 +46,8 @@ public:
 
 class MahjongSet {
 public:
-    MahjongSet() {
-        _num_tiles = 0;
-        create_dragon_tiles();
-        create_wind_tiles();
-        create_flower_tiles();
-        create_symbol_tiles();
-        create_bamboo_tiles();
-        create_dot_tiles();
-    }
-
-    void print() {
-        printf("******Mahjong set******\n");
-        for (int num_tile = 0; num_tile < TILES_IN_SET; num_tile++) {
-            _mahjong_set[num_tile]->print();
-        }
-    }
+    explicit MahjongSet();
+    void print();
 
 protected:
     MahjongTile * _mahjong_set [TILES_IN_SET];
@@ -75,6 +60,8 @@ protected:
     const TileGroup BAMBOO = TileGroup{.name = "Bamboo", .has_a_number = true, .num_tiles_in_set = 36};
     const TileGroup DOT = TileGroup{.name = "Dot", .has_a_number = true, .num_tiles_in_set = 36};
     
+    void create_tiles(TileGroup group, std::list<std::string> names);
+    void create_numbered_tiles(TileGroup group, int max_num_tile);
     void create_dragon_tiles();
     void create_wind_tiles();
     void create_flower_tiles();

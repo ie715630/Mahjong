@@ -3,45 +3,83 @@
 
 #include "mahjong.h"
 
-void MahjongSet::create_dragon_tiles() {
-    MahjongTile * red_dragon =  new MahjongTile(DRAGON, "Red");
-    MahjongTile * green_dragon =  new MahjongTile(DRAGON, "White");
-    MahjongTile * white_dragon =  new MahjongTile(DRAGON, "Green");
+// Constructor
+MahjongSet::MahjongSet() {
+    _num_tiles = 0;
+    create_dragon_tiles();
+    create_wind_tiles();
+    create_flower_tiles();
+    create_symbol_tiles();
+    create_bamboo_tiles();
+    create_dot_tiles();
+}
 
-    int initial_tile_num = _num_tiles;
-    for (; (_num_tiles - initial_tile_num) < DRAGON.num_tiles_in_set;) {
-        _mahjong_set[_num_tiles++] = red_dragon;
-        _mahjong_set[_num_tiles++] = green_dragon;
-        _mahjong_set[_num_tiles++] = white_dragon;
+void MahjongSet::create_tiles(TileGroup group, std::list<std::string> names) {
+    // Check that the number of tiles can be completed with provided tiles
+    int tiles_incomplete = group.num_tiles_in_set % names.size();
+    assert (tiles_incomplete == 0);
+
+    // The number of times each tile repeats based on the total of the group
+    int num_repeated_tiles = group.num_tiles_in_set / names.size();
+
+    // Create each tile name and add it to the set num_repeated_tiles times'
+    for (auto tile_name : names) {
+        MahjongTile * tile = new MahjongTile(group, tile_name);
+        for (int num_tiles = 0; num_tiles < num_repeated_tiles; num_tiles++) {
+            _mahjong_set[_num_tiles++] = tile;
+        }
     }
 }
-void MahjongSet::create_wind_tiles() {
-    MahjongTile * north = new MahjongTile(WIND, "North");
-    MahjongTile * south = new MahjongTile(WIND, "South");
-    MahjongTile * east = new MahjongTile(WIND, "East");
-    MahjongTile * west = new MahjongTile(WIND, "West");
 
-    int initial_tile_num = _num_tiles;
-    for (; (_num_tiles - initial_tile_num) < WIND.num_tiles_in_set;) {
-        _mahjong_set[_num_tiles++] = north;
-        _mahjong_set[_num_tiles++] = south;
-        _mahjong_set[_num_tiles++] = east;
-        _mahjong_set[_num_tiles++] = west;
+void MahjongSet::create_numbered_tiles(TileGroup group, int max_num_tile) {
+    // Check that the number of tiles can be completed with provided tiles
+    int tiles_incomplete = group.num_tiles_in_set % max_num_tile;
+    assert (tiles_incomplete == 0);
+    
+    // The number of times each tile repeats based on the total of the group
+    int num_repeated_tiles = group.num_tiles_in_set / max_num_tile;
+
+    // Create each tile name and add it to the set num_repeated_tiles times'
+    for (int tile_num = 0; tile_num < max_num_tile; tile_num++) {
+        int real_tile_num = tile_num+1;
+        MahjongTile * tile = new MahjongTileNumerical(group, real_tile_num);
+        for (int num_tiles = 0; num_tiles < num_repeated_tiles; num_tiles++) {
+            _mahjong_set[_num_tiles++] = tile;
+        }
     }
+}
+
+void MahjongSet::create_dragon_tiles() {
+    std::list<std::string> dragons = {"Red", "White", "Green"};
+    create_tiles(DRAGON, dragons);
+}
+
+void MahjongSet::create_wind_tiles() {
+    std::list<std::string> winds = {"North", "South", "East", "West"};
+    create_tiles(WIND, winds);
 }
 
 void MahjongSet::create_flower_tiles() {
-
+    std::list<std::string> flowers = {"Winter", "Autumn", "Spring", "Fall"};
+    create_tiles(FLOWER, flowers);
 }
 
 void MahjongSet::create_symbol_tiles() {
-
+    create_numbered_tiles(SYMBOL, 9);
 }
 void MahjongSet::create_bamboo_tiles() {
-    
+    create_numbered_tiles(BAMBOO, 9);
 }
 void MahjongSet::create_dot_tiles() {
-    
+    create_numbered_tiles(DOT, 9);
+}
+
+void MahjongSet::print() {
+        printf("******Mahjong set******\n");
+        for (int num_tile = 0; num_tile < TILES_IN_SET; num_tile++) {
+            _mahjong_set[num_tile]->print();
+        }
+        printf("Number of tiles: %i\n", _num_tiles);
 }
 
 int main() {
@@ -50,32 +88,6 @@ int main() {
     MahjongSet mahjong_set = MahjongSet();
     mahjong_set.print();
 
-    /*
-
-
-
-    int kNumValues = 9;
-    MahjongTileNumerical symbols[9];
-    for (int tile_num = 0; tile_num < kNumValues; tile_num++ ) {
-        int tile_number = tile_num + 1;
-        symbols[tile_num] = MahjongTileNumerical(SYMBOL, tile_number);
-    }
-
-    MahjongTileNumerical bamboos[9];
-    for (int tile_num = 0; tile_num < kNumValues; tile_num++ ) {
-        int tile_number = tile_num + 1;
-        bamboos[tile_num] = MahjongTileNumerical(BAMBOO, tile_number);
-    }
-
-    MahjongTileNumerical dots[9];
-    for (int tile_num = 0; tile_num < kNumValues; tile_num++ ) {
-        int tile_number = tile_num + 1;
-        dots[tile_num] = MahjongTileNumerical(DOT, tile_number);
-    }
-
-    red_dragon.print();
-    
-*/
     return 0;
 }
 
