@@ -132,25 +132,44 @@ bool Mahjong::play() {
     } else {
         _first_player_played = true;
     }
+
     current_player->play();
-    _last_discard = current_player->get_tile_to_discard();
-    printf("%s was discarded\n", _last_discard->get_full_name().c_str());
 
     if (current_player->has_won()) {
-        printf("%s has won!\n", current_player->get_name().c_str());
+        printf("%s has won!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", current_player->get_name().c_str());
         current_player->print_hand();
         current_player->print_sets();
         game_is_over = true;
+    } else {
+        _last_discard = current_player->get_tile_to_discard();
+        printf("%s was discarded\n", _last_discard->get_full_name().c_str());
     }
+
     if (_set->get_num_tiles() == 0) {
         printf("No more tiles to play\n");
         game_is_over = true;
     }
 
+
     update_current_player();
 
     return game_is_over;
 }
+
+
+bool Mahjong::player_can_steal(MahjongTile tile) {
+    for (auto player_it = _players.begin(); player_it != _players.end(); ++player_it) {
+        Player * player = *player_it;
+        if (player->tile_is_partial_pung(tile) || player->tile_is_pair_of_eyes(tile)) {
+            _current_player_it = player_it;
+            printf("Player %s stole pung!!!!!!!!!!!!!!!!!\n", player->get_name().c_str());
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 void Mahjong::update_current_player() {
     ++_current_player_it;
@@ -163,7 +182,11 @@ void Mahjong::deal_tile_to_player(Player *current_player) {
     if (!_last_discard) {
         throw std::runtime_error("Last discard is NULL!");
     }
+
+    player_can_steal(*_last_discard);
+
     if (current_player->wants_discard_tile(_last_discard)) {
+        printf("%s wants discarded tile\n", current_player->get_name().c_str());
         deal_tile_to_player(current_player, _last_discard);
         _last_discard = nullptr;
     } else {
@@ -172,6 +195,7 @@ void Mahjong::deal_tile_to_player(Player *current_player) {
             if (!tile_of_set) {
                 throw std::runtime_error("Tile is NULL!");
             }
+            player_can_steal(*tile_of_set);
             deal_tile_to_player(current_player, tile_of_set);
         } while (current_player->get_num_tiles_set_and_hand() !=
                  TILES_PER_PLAYER+1);

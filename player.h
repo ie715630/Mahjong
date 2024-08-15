@@ -43,14 +43,17 @@ class Player {
     bool tile_is_partial_pung(MahjongTile tile);
     bool tile_is_chow(MahjongTile tile);
     bool tile_is_partial_chow(MahjongTile tile);
+    bool tile_is_pair_of_eyes(MahjongTile tile);
     void pass_3_tiles(Player * receiver);
     void move_received_tiles_to_hand();
     void play();
     void play_pungs();
     void play_chows();
+    void play_pair_of_eyes();
     MahjongTile * get_tile_to_discard();
     bool wants_discard_tile(MahjongTile * tile);
     bool has_won();
+    
 
 };
 

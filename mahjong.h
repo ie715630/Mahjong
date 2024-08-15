@@ -35,6 +35,7 @@ class Mahjong {
     void pass_3_tiles_to_next_player();
     bool play();
     void update_current_player();
+    bool player_can_steal(MahjongTile tile);
 };
 
 #endif

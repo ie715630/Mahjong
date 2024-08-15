@@ -75,6 +75,14 @@ bool Player::tile_is_partial_pung(MahjongTile tile) {
     return tiles_with_wanted_id == (TILES_IN_PUNG - 1);
 }
 
+bool Player::tile_is_pair_of_eyes(MahjongTile tile) {
+    if (_hand.size() != 1) {
+        return false;
+    }
+
+    return tile.get_id() == _hand.front()->get_id();
+}
+
 bool Player::tile_is_chow(MahjongTile tile) {
     if (!(tile.get_group().has_a_number)) {
         return false;
@@ -154,6 +162,7 @@ void Player::play() {
     // Look for pungs
     play_pungs();
     play_chows();
+    play_pair_of_eyes();
 }
 
 void Player::play_pungs() {
@@ -182,6 +191,18 @@ void Player::play_chows() {
             move_tile_between_hands(&_hand, &_sets, chow_next_id);
             move_tile_between_hands(&_hand, &_sets, chow_next_next_id);
             printf("CHOW of %s!\n", tile->get_full_name().c_str());
+        }
+    }
+}
+
+void Player::play_pair_of_eyes() {
+    if (_hand.size() == 2) {
+        TileId tile_id = _hand[0]->get_id();
+        if (_hand[0]->get_id() == _hand[1]->get_id()) {
+            bool tile_was_removed = false;
+            do {
+                tile_was_removed = move_tile_between_hands(&_hand, &_sets, tile_id);
+            } while (tile_was_removed);
         }
     }
 }
@@ -226,9 +247,11 @@ MahjongTile *Player::get_tile_to_discard() {
 }
 
 bool Player::wants_discard_tile(MahjongTile * tile) {
+    bool is_pair_of_eyes = tile_is_pair_of_eyes(* tile);
     bool is_partial_pung = tile_is_partial_pung(* tile);
-    bool is_partial_chow = tile_is_partial_chow(* tile);
-    return is_partial_chow || is_partial_pung;
+    bool is_partial_chow = tile_is_chow(* tile);
+    bool is_useful = is_pair_of_eyes || is_partial_chow || is_partial_pung;
+    return is_useful;
 }
 
 void Bot::preprocess_hand() {
@@ -293,7 +316,7 @@ void Player::remove_tile(TileId tile_id) {
 }
 
 bool Player::has_won() {
-    if (_hand.size() == 1) {
+    if (_hand.size() == 0) {
         return true;
     } else {
         return false;
