@@ -3,6 +3,7 @@ CXX = g++
 
 # Compiler flags
 CXXFLAGS = -Wall -g
+CXXFLAGS += -std=c++17
 
 # Target executable
 TARGET = Mahjong

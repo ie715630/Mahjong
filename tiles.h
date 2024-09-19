@@ -10,10 +10,11 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 class MahjongTile {
   protected:
-    static TileId _unique_id;
+    inline static TileId _unique_id = 0;
 
     TileGroup _tile_group;
     std::string _name;

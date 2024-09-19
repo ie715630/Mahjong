@@ -3,8 +3,6 @@
 
 #include "tiles.h"
 
-uint8_t MahjongTile::_unique_id = 0;
-
 // TODO: Add destructors
 
 // Constructor
